@@ -2,6 +2,7 @@
 import io
 import os
 
+from collections import defaultdict
 from surprise import KNNBasic
 from surprise import Reader, Dataset
 from surprise import get_dataset_dir
@@ -19,6 +20,19 @@ def read_movie_names():
             name_to_rawid[line[1]] = line[0]
 
     return rawid_to_name, name_to_rawid
+
+#%% Top-N
+def get_top_n(predictions, n=10):
+    top_n = defaultdict(list)
+    for uid, iid, _, est, _ in predictions:
+        top_n[uid].append((iid, est))
+
+    # Then sort the predictions for each user and retrieve the k highest ones.
+    for uid, user_ratings in top_n.items():
+        user_ratings.sort(key=lambda x: x[1], reverse=True)
+        top_n[uid] = user_ratings[:n]
+
+    return top_n
 
 #%% Load Data
 file_path = os.path.abspath("Recommender-System/ml-100k/u.data")
@@ -53,5 +67,15 @@ toy_story_neighbors = (rawid_to_name[rid]
 print('The 10 nearest neighbors of Toy Story are:')
 for movie in toy_story_neighbors:
     print(movie)
+
+#%% Predict
+testset = trainset.build_anti_testset()
+predictions = algo.test(testset)
+
+#%% Get Top-N
+top_n = get_top_n(predictions, n=10)
+
+for uid, user_ratings in top_n.items():
+    print(uid, [rawid_to_name[iid] for (iid, _) in user_ratings])
 
 #%%
