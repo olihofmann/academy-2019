@@ -9,7 +9,7 @@ Robo Mongo unter https://robomongo.org/download herunterladen
 docker run -it --link cas-mongo:mongo --rm mongo sh -c 'exec mongo "$MONGO_PORT_27017_TCP_ADDR:$MONGO_PORT_27017_TCP_PORT/test"'
 
 ## Übung starten
-### Creating a Database and Inserting Records
+
 Für den Anfang gibt es sechs einfache Konzepte, die wir verstehen müssen.
 1. MongoDB hat das gleiche Konzept einer Datenbank, mit der Sie wahrscheinlich bereits vertraut sind (oder ein Schema für youOracle Leute). Innerhalb einer MongoDB-Instanz können Sie null oder mehr Datenbanken haben, die jeweils als High-Level-Container für alles andere dienen.
 2. Eine Datenbank kann null oder mehr Collection haben. Eine Collection ist in der relationalen Welt eine Table
@@ -152,4 +152,102 @@ db.unicorns.find({name: 'Pilot'})
 
 db.unicorns.update({name: 'Aurora'}, {$push: {loves: 'sugar'}})
 db.unicorns.find({name: 'Aurora'})
+
+db.hits.update({page: 'unicorns'}, {$inc: {hits: 1}});
+db.hits.find();
+
+db.hits.update({page: 'unicorns'}, {$inc: {hits: 1}}, {upsert:true});
+db.hits.find();
+
+db.hits.update({page: 'unicorns'}, {$inc: {hits: 1}}, {upsert:true});
+db.hits.find();
+
+db.unicorns.update({}, {$set: {vaccinated: true }});
+db.unicorns.find({vaccinated: true});
+
+db.unicorns.update({}, {$set: {vaccinated: true }}, {multi:true});
+db.unicorns.find({vaccinated: true});
+```
+
+#### Übung 5
+```
+db.unicorns.find({}, {name: 1});
+
+//heaviest unicorns first
+db.unicorns.find().sort({weight: -1})
+
+//by unicorn name then vampire kills:
+db.unicorns.find().sort({name: 1, vampires: -1})
+
+db.unicorns.find().sort({weight: -1}).limit(2).skip(1)
+
+db.unicorns.count({vampires: {$gt: 50}})
+
+db.unicorns.find({vampires: {$gt: 50}}).count()
+```
+
+#### Übung 6
+```
+db.employees.insert({_id: ObjectId( "4d85c7039ab0fd70a117d730"), name: 'Leto'})
+
+db.employees.insert({_id: ObjectId( "4d85c7039ab0fd70a117d731"), name: 'Duncan',
+                     manager: ObjectId( "4d85c7039ab0fd70a117d730")});
+
+db.employees.insert({_id: ObjectId( "4d85c7039ab0fd70a117d732"), name: 'Moneo',
+                    manager: ObjectId( "4d85c7039ab0fd70a117d730")});
+
+db.employees.find({manager: ObjectId( "4d85c7039ab0fd70a117d730")})
+
+db.employees.insert({_id: ObjectId( "4d85c7039ab0fd70a117d733"), 
+                     name: 'Siona',
+                     manager: [ObjectId( "4d85c7039ab0fd70a117d730"),
+                              ObjectId( "4d85c7039ab0fd70a117d732")]       
+                   })
+
+db.employees.find({manager: ObjectId( "4d85c7039ab0fd70a117d730")})
+
+db.employees.insert({_id: ObjectId( "4d85c7039ab0fd70a117d734"), 
+                     name: 'Ghanima',
+                     family: {mother: 'Chani',
+                             father: 'Paul',
+                             brother: ObjectId( "4d85c7039ab0fd70a117d730")}
+                    })
+
+db.employees.find({ 'family.mother': 'Chani'})
+
+db.employees.insert({_id: ObjectId( "4d85c7039ab0fd70a117d735"), 
+					 name : 'Chani', 
+					 family : [ {relation:'mother', name: 'Chani'}, 
+					           {relation:'father', name: 'Paul'}, 
+					           {relation:'brother', name: 'Duncan'}
+					         ]})
+
+db.users.insert({name: 'leto',
+                email: 'leto@dune.gov',
+                addresses: [{street: "229 W. 43rd St",
+                             city: "New York", 
+                             state:"NY",
+                             zip:"10036"}, 
+                            {street: "555 University",
+                             city: "Palo Alto", 
+                             state:"CA",
+                             zip:"94107"}]})
+```
+
+#### Übung 7
+```
+db.unicorns.aggregate([{$group:{_id:'$gender', total: {$sum:1}}}])
+
+db.unicorns.aggregate([{$match: {weight:{$lt:600}}}, 
+						{$group: {_id:'$gender',
+						          total:{$sum:1},
+								  avgVamp:{$avg:'$vampires'}}}, 
+						{$sort:{avgVamp:-1}} ])
+
+db.unicorns.aggregate([{$unwind:'$loves'}, 
+                       {$group: {_id:'$loves', 
+                                 total:{$sum:1}, 
+                                 unicorns:{$addToSet:'$name'}}}, 
+                       {$sort:{total:-1}},
+                       {$limit:1} ])
 ```
