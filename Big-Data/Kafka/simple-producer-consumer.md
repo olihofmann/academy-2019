@@ -5,6 +5,9 @@ docker-compose up
 
 In der Console nach :8888 suche und die URL in den Browser kopieren
 
+## Kafka Python Dokumentation
+https://kafka-python.readthedocs.io/en/master/usage.html
+
 ## Übung
 1. Neues Notebook für Python 3 erstellen
 2. Name vergebe

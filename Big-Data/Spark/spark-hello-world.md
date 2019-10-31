@@ -3,6 +3,9 @@
 ## Vorberietung
 docker-compose up -d
 
+## Dokumentation Spark
+https://spark.apache.org/docs/latest/api/python/index.html
+
 ## Übung 1
 
 #### Upload der Daten in HDFS

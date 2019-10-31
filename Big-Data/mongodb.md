@@ -8,6 +8,9 @@ Robo Mongo unter https://robomongo.org/download herunterladen
 ### Arbeiten mit dem mongo db cli
 docker run -it --link cas-mongo:mongo --rm mongo sh -c 'exec mongo "$MONGO_PORT_27017_TCP_ADDR:$MONGO_PORT_27017_TCP_PORT/test"'
 
+## Mongo DB Query Dokumentation
+https://docs.mongodb.com/manual/crud/
+
 ## Übung starten
 
 Für den Anfang gibt es sechs einfache Konzepte, die wir verstehen müssen.
