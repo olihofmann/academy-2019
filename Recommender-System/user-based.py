@@ -77,5 +77,5 @@ top_n = get_top_n(predictions, n=10)
 
 for uid, user_ratings in top_n.items():
     print(uid, [rawid_to_name[iid] for (iid, _) in user_ratings])
-
+    print()
 #%%
