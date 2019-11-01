@@ -4,7 +4,7 @@
 
 docker run -p 9042:9042 --name academy-cassandra -d cassandra
 
-docker run-it --link academy-cassandra:cassandra --rm cassandra sh -c 'exec cqlsh "$CASSANDRA_PORT_9042_TCP_ADDR"'
+docker run -it --link academy-cassandra:cassandra --rm cassandra sh -c 'exec cqlsh "$CASSANDRA_PORT_9042_TCP_ADDR"'
 
 ## Cassandra Dokumentation
 http://cassandra.apache.org/doc/latest/cql/
